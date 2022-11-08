@@ -9,11 +9,7 @@ export class CategoriesController {
   //   @UseGuards(AuthGuard)
   //   @Serialize(ReportDto)
   async create(@Body() body: CreateCategoryService) {
-    console.log(body);
-    return this.categoryService.create(
-      body,
-      //   await this.userService.findOne(session.userID),
-    );
+    return this.categoryService.create(body);
   }
   @Get('remove/:id')
   remove(@Param('id') id: Number) {

@@ -13,11 +13,12 @@ export class CategoriesService {
     return await this.repo.save(category);
   }
   async remove(id: Number) {
-    var report = await this.repo.findOneBy({ id: Equal(id) });
-    if (!report) {
-      throw new NotFoundException('No report found with id: ' + id);
+    var category = await this.repo.findOneBy({ id: Equal(id) });
+    if (!category) {
+      // throw new NotFoundException();
+      return null;
     }
-    return this.repo.remove(report);
+    return this.repo.remove(category);
   }
   async find(name: String) {
     return await this.repo.find({ where: { name: Equal(name) } });
