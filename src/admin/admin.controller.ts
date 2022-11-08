@@ -9,6 +9,7 @@ import {
   ForbiddenException,
   forwardRef,
   Inject,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from '../users/auth.service';
 import { UsersService } from '../users/users.service';
@@ -23,28 +24,12 @@ export class AdminController {
     private adminService: AdminService,
     private userService: UsersService,
   ) {}
-
-  @Post('/signup')
-  async createAdmin(@Body() body: CreateAdminDto) {
-    console.log('Creating the user...');
-    if (body.admin == 0) {
-      throw new Error('You cannot signup as non-admin here!');
-    }
-    var user = await this.authService.signup(
-      body.name,
-      body.email,
-      body.password,
-      body.admin,
-    );
-
-    return user;
-  }
   @Post('/signin')
   async signinUser(@Body() body: SigninAdminDto, @Session() session: any) {
     console.log('Checking the signin user!');
     var user = await this.authService.signin(body.email, body.password);
     if (user.admin == 0) {
-      throw new Error('You cannot sign in as a non-admin here!');
+      return null;
     }
     session.userID = user.id;
     return user;
@@ -55,7 +40,8 @@ export class AdminController {
     const user = await this.userService.findOne(session.userID);
     console.log(user);
     if (!user || user.admin == 0 || user.id != session.userID) {
-      throw new Error('Forbidden Resource');
+      // throw new Error('Forbidden Resource');
+      return null;
     }
     return await this.adminService.blaclistUser(email);
   }
@@ -69,7 +55,7 @@ export class AdminController {
     const user = await this.userService.findOne(session.userID);
     console.log(user);
     if (!user || user.admin == 0 || user.id != session.userID) {
-      throw new Error('Forbidden Resource');
+      return null;
     }
     return await this.adminService.whitelistUser(email);
   }
