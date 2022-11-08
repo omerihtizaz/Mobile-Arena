@@ -1,0 +1,47 @@
+POST http://localhost:3000/users/signup
+Content-Type: application/json
+
+{
+    "name": "admin3", 
+    "email": "admin3@gmail.com",
+    "password": "admin3"
+}
+
+###
+POST http://localhost:3000/users/signin
+Content-Type: application/json
+
+{
+    "email": "admin3@gmail.com",
+    "password": "admin3"
+}
+
+###
+Post http://localhost:3000/users/logout
+####
+# ###
+# Get http://localhost:3000/users/colors/Red
+# ####
+# Get  http://localhost:3000/users/getColors
+###
+
+Get http://localhost:3000/users/whoami
+####
+Get http://localhost:3000/users/findOne/10
+
+
+###
+Get http://localhost:3000/users/find/Omer.Ihtizaz@gmail.com
+
+
+###
+PATCH  http://localhost:3000/users/update/6
+Content-Type: application/json
+
+{
+    "email":"ahmed.tariq@hotmail.com"
+}
+
+
+### 
+Get http://localhost:3000/users/remove/3

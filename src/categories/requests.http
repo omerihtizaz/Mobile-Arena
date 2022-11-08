@@ -1,0 +1,19 @@
+
+POST http://localhost:3000/categories/create
+Content-Type: application/json
+
+{
+  "name": "private"
+}
+###
+
+POST http://localhost:3000/categories/create
+Content-Type: application/json
+
+{
+  "name": "public"
+}
+
+###
+
+Get http://localhost:3000/categories/remove/3
