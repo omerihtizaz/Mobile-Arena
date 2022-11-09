@@ -26,20 +26,10 @@ export class MobilesController {
 
   @UseGuards(AuthGuard)
   @Post('/create')
-  //   @UseGuards(AuthGuard)
-  //   @Serialize(ReportDto)
   async create(@Body() body: CreateMobileDto, @Session() session: any) {
-    return this.mobileService.create(
-      body,
-      await this.userService.findOne(session.userID),
-    );
+    var user = await this.userService.findOne(session.userID);
+    return this.mobileService.create(body, user);
   }
-  // @UseGuards(AuthGuard)
-  // @Get('/findone/:name')
-  // async findOne(@Param('name') name: string) {
-  //   console.log('Param: ', name);
-  //   return await this.mobileService.findOne(name);
-  // }
   @Get('/getCategoryMobiles/:name')
   async getCategoryMobiles(
     @Param('name') name: String,

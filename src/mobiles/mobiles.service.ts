@@ -40,6 +40,7 @@ export class MobilesService {
       mobile.categories = c1;
     }
     mobile.user = user;
+
     return await this.repo.save(mobile);
   }
 
@@ -95,7 +96,6 @@ export class MobilesService {
 
   async deleteMobile(name: string, userID: Number) {
     const mobile = await this.findOne(name);
-    console.log(await mobile.user);
     if (!mobile || mobile.user.id != userID) {
       return new Error('Forbidden Resource!');
     }
