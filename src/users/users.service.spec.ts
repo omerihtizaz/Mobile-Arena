@@ -8,18 +8,16 @@ import { CreateUserDto } from './dtos/signup-user.dto';
 import { User } from './user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-
+let userService: UsersService;
+let fakeAuthService: Partial<AuthService>;
+let fakeUserRepo;
+let userDatabase = [];
 describe('UsersService', () => {
-  let service: UsersService;
-  let fakeAuthService: Partial<AuthService>;
-  let fakeRepo;
-  let database = [];
-
   beforeEach(async () => {
-    fakeRepo = {
+    fakeUserRepo = {
       // mock the repo `findOneOrFail`
       findOneBy: (id: number) => {
-        const filteredcategories = database.filter(
+        const filteredcategories = userDatabase.filter(
           (user: User) => user.id == id['id'],
         );
         if (!filteredcategories[0]) {
@@ -28,20 +26,20 @@ describe('UsersService', () => {
         return Promise.resolve(filteredcategories[0]);
       },
       find: (email: EqualOperator<string>) => {
-        const filteredcategories = database.filter(
+        const filteredcategories = userDatabase.filter(
           (user) => Equal(user.email) === email,
         );
         return Promise.resolve(filteredcategories);
       },
       remove: (user: User) => {
         // console.log('User: ', user);
-        const filteredcategories = database.filter((curr_user) => {
+        const filteredcategories = userDatabase.filter((curr_user) => {
           curr_user.id != user.id;
           // console.log(curr_user.id, user.id);
         });
-        console.log('before: ', database);
-        database = filteredcategories;
-        console.log('after: ', database);
+        console.log('before: ', userDatabase);
+        userDatabase = filteredcategories;
+        console.log('after: ', userDatabase);
         return Promise.resolve(user);
       },
       create: (someDto: any) => {
@@ -56,7 +54,7 @@ describe('UsersService', () => {
         return Promise.resolve(user);
       },
       save: (dto: User) => {
-        database.push(dto);
+        userDatabase.push(dto);
         return Promise.resolve(dto);
       },
     };
@@ -87,7 +85,7 @@ describe('UsersService', () => {
         } as unknown as User);
       },
     };
-    const module: TestingModule = await Test.createTestingModule({
+    const userServiceModule: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
         {
@@ -100,35 +98,36 @@ describe('UsersService', () => {
         },
         {
           provide: getRepositoryToken(User),
-          useValue: fakeRepo,
+          useValue: fakeUserRepo,
         },
       ],
       controllers: [UsersController],
     }).compile();
 
-    service = (await module).get(UsersService);
+    userService = (await userServiceModule).get(UsersService);
   });
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(userService).toBeDefined();
   });
   it('should be able to create an instance of user when prompted', async () => {
-    var consi = await service.create('Omer', 'omer12@gmail.com', '123', 1);
+    var consi = await userService.create('Omer', 'omer12@gmail.com', '123', 1);
     expect(consi).toBeDefined();
     expect(consi.name).toEqual('Omer');
     expect(consi.email).toEqual('omer12@gmail.com');
-    expect(await service.find('omer12@gmail.com')).toBeDefined();
+    expect(await userService.find('omer12@gmail.com')).toBeDefined();
   });
   it('should be able to remove an instance of user when prompted', async () => {
     console.log(
       '--------------------------------------------------------------------------',
     );
-    var consi = await service.create('Omer', 'omer.@gmail.com', '123', 1);
-    var user = await service.findOne(consi.id);
+    var consi = await userService.create('Omer', 'omer.@gmail.com', '123', 1);
+    var user = await userService.findOne(consi.id);
     expect(user).toBeDefined();
-    user = await service.remove(user.id);
+    user = await userService.remove(user.id);
     expect(user).toBeDefined();
-    await expect(service.findOne(user.id)).toEqual(
+    await expect(userService.findOne(user.id)).toEqual(
       undefined || null || Promise.resolve({}),
     );
   });
 });
+export { userService, fakeAuthService, fakeUserRepo, userDatabase };

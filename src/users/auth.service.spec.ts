@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 describe('AUTH SERVICE', () => {
-  let service: AuthService;
+  let authService: AuthService;
   let fakeUserService: Partial<UsersService>;
   beforeEach(async () => {
     const users: User[] = [];
@@ -35,7 +35,7 @@ describe('AUTH SERVICE', () => {
     const fakeAdminService = {
       findOne: () => Promise.resolve(),
     };
-    const module = Test.createTestingModule({
+    const authServiceModule = Test.createTestingModule({
       providers: [
         AuthService,
         {
@@ -48,14 +48,14 @@ describe('AUTH SERVICE', () => {
         },
       ],
     }).compile();
-    service = (await module).get(AuthService);
+    authService = (await authServiceModule).get(AuthService);
   });
-  it('can create an instance of auth service', async () => {
-    expect(service).toBeDefined();
+  it('can create an instance of auth authService', async () => {
+    expect(authService).toBeDefined();
   });
 
   it('can create a new user with a salted and hashed password', async () => {
-    const user = await service.signup('Omer', 'omer@gmail.com', '123', 0);
+    const user = await authService.signup('Omer', 'omer@gmail.com', '123', 0);
     expect(user.password).not.toEqual('123');
 
     const [salt, hash] = user.password.split('.');
@@ -63,14 +63,14 @@ describe('AUTH SERVICE', () => {
     expect(hash).toBeDefined();
   });
   it('throws an error if the user wishes to signup with an email that already exisit', async () => {
-    await service.signup('a', 'asdf@asdf.com', 'asdf', 0);
+    await authService.signup('a', 'asdf@asdf.com', 'asdf', 0);
     await expect(
-      service.signup('a', 'asdf@asdf.com', 'asdf', 0),
+      authService.signup('a', 'asdf@asdf.com', 'asdf', 0),
     ).rejects.toThrow(BadRequestException);
   });
   it('throws if signin is called with an unused email', async () => {
     await expect(
-      service.signin('asdflkj@asdlfkj.com', 'passdflkj'),
+      authService.signin('asdflkj@asdlfkj.com', 'passdflkj'),
     ).rejects.toThrow(NotFoundException);
   });
 
@@ -85,7 +85,7 @@ describe('AUTH SERVICE', () => {
         } as unknown as User,
       ]);
     await expect(
-      service.signin('laskdjf@alskdfj.com', 'passowrd'),
+      authService.signin('laskdjf@alskdfj.com', 'passowrd'),
     ).rejects.toThrow(NotFoundException);
   });
 });
