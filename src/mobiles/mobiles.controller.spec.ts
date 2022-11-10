@@ -188,12 +188,12 @@ describe('MobilesController', () => {
         admin: number,
       ) => {
         return Promise.resolve({
-          id: Math.floor(Math.random() * 99999),
+          // id: Math.floor(Math.random() * 99999),
           name: name,
           email: email,
-          password: password,
+          password_: password,
           admin: admin,
-        } as unknown as User);
+        });
       },
       signin: (email: string, password: string) => {
         return Promise.resolve({
@@ -376,11 +376,5 @@ describe('MobilesController', () => {
     } as unknown as CreateMobileDto;
     var createdMobile = await controller.create(mobile, { userID: 1 });
     expect(createdMobile).toBeDefined();
-    // var removed = await controller.deleteMobile('A50', { userID: 1 });
-    // expect(removed).toBeDefined();
-    // //ts-ignore
-    // var what = bridgeTable.filter((S) => S[0] === 1 && S[1] === 'A50');
-    // console.log(what);
-    // // expect();
   });
 });

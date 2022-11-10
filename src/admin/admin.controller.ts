@@ -26,10 +26,9 @@ export class AdminController {
   ) {}
   @Post('/signin')
   async signinUser(@Body() body: SigninAdminDto, @Session() session: any) {
-    console.log('Checking the signin user!');
     var user = await this.authService.signin(body.email, body.password);
     if (user.admin == 0) {
-      return null;
+      throw new BadRequestException('You cannot sign in as User');
     }
     session.userID = user.id;
     return user;
@@ -38,9 +37,7 @@ export class AdminController {
   @Get('/blacklist/:email')
   async blaclistUser(@Param('email') email: string, @Session() session: any) {
     const user = await this.userService.findOne(session.userID);
-    console.log(user);
     if (!user || user.admin == 0 || user.id != session.userID) {
-      // throw new Error('Forbidden Resource');
       return null;
     }
     return await this.adminService.blaclistUser(email);
@@ -53,7 +50,7 @@ export class AdminController {
   @Get('/whitelist/:email')
   async whitelist(@Param('email') email: string, @Session() session: any) {
     const user = await this.userService.findOne(session.userID);
-    console.log(user);
+    console.log('HERE IS USER: ', user);
     if (!user || user.admin == 0 || user.id != session.userID) {
       return null;
     }

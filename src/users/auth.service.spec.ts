@@ -56,14 +56,21 @@ describe('AUTH SERVICE', () => {
 
   it('can create a new user with a salted and hashed password', async () => {
     const user = await authService.signup('Omer', 'omer@gmail.com', '123', 0);
-    expect(user.password).not.toEqual('123');
+    expect(user.password_).not.toEqual('123');
 
-    const [salt, hash] = user.password.split('.');
+    const [salt, hash] = user.password_.split('.');
     expect(salt).toBeDefined();
     expect(hash).toBeDefined();
   });
   it('throws an error if the user wishes to signup with an email that already exisit', async () => {
-    await authService.signup('a', 'asdf@asdf.com', 'asdf', 0);
+    var user = await authService.signup('a', 'asdf@asdf.com', 'asdf', 0);
+    await fakeUserService.create(
+      user.name,
+      user.email,
+      user.password_,
+      user.admin,
+    );
+
     await expect(
       authService.signup('a', 'asdf@asdf.com', 'asdf', 0),
     ).rejects.toThrow(BadRequestException);

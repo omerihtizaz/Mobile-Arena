@@ -69,12 +69,12 @@ describe('UsersService', () => {
         admin: number,
       ) => {
         return Promise.resolve({
-          id: Math.floor(Math.random() * 99999),
+          // id: Math.floor(Math.random() * 99999),
           name: name,
           email: email,
-          password: password,
+          password_: password,
           admin: admin,
-        } as unknown as User);
+        });
       },
       signin: (email: string, password: string) => {
         return Promise.resolve({
