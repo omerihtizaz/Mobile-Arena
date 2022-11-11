@@ -1,13 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-const cookieSession = require('cookie-session');
+import { setupApp } from './setup-app';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(
-    cookieSession({
-      keys: ['asjhfsah'],
-    }),
-  );
+  // setupApp(app);
   await app.listen(3000);
 }
 bootstrap();

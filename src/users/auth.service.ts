@@ -30,7 +30,7 @@ export class AuthService {
     const salt = randomBytes(8).toString('hex');
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     const password_ = salt + '.' + hash.toString('hex');
-
+    console.log('RETURNING THIS: ', { name, email, password_, admin });
     return { name, email, password_, admin };
   }
   async signin(email: string, password: string) {

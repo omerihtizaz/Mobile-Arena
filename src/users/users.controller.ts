@@ -8,6 +8,7 @@ import {
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
+import { CurrentUser } from '../decorators/current-user.decorator';
 import { CreateUserDto } from './dtos/signup-user.dto';
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
@@ -23,7 +24,7 @@ export class UsersController {
     private userService: UsersService,
   ) {}
   @Post('/signup')
-  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+  async createUser(@Body() body: CreateUserDto, @CurrentUser() session) {
     if (body.admin == 1) {
       throw new BadRequestException('You cannot sign up as Admin!');
     }
@@ -36,25 +37,27 @@ export class UsersController {
     return await this.userService.create(name, email, password_, admin);
   }
   @Post('/signin')
-  async signinUser(@Body() body: SignInUserDto, @Session() session: any) {
+  async signinUser(@Body() body: SignInUserDto, @CurrentUser() session) {
     var user = await this.authService.signin(body.email, body.password);
+
     session.userID = user.id;
+    console.log(session);
     return user;
   }
   @Get('/findone/:id')
-  async findOne(@Param('id') id: number, @Session() session: any) {
+  async findOne(@Param('id') id: number, @CurrentUser() session) {
     return await this.userService.findOne(id);
   }
 
   @Get('/whoami')
   @UseGuards(AuthGuard)
-  async WhoAmI(@Session() session: any) {
-    console.log('I am in controller ka WHOAMI and id: ', session.userID);
+  async WhoAmI(@CurrentUser() session) {
+    console.log(session);
     return this.userService.findOne(session.userID);
   }
   @UseGuards(AuthGuard)
   @Post('/logout')
-  async logout(@Session() session: any) {
+  async logout(@CurrentUser() session) {
     if (!session.userID) {
       throw new BadRequestException('You must log in first!');
     }
