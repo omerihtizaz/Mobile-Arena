@@ -25,7 +25,7 @@ export class UsersController {
     private userService: UsersService,
   ) {}
   @Post('/signup')
-  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+  async createUser(@Body() body: CreateUserDto, @Session() session) {
     if (body.admin == 1) {
       throw new BadRequestException('You cannot sign up as Admin!');
     }
@@ -36,13 +36,14 @@ export class UsersController {
       body.admin,
     );
     session.userID = 20;
+    session.userID = 20;
     return await this.userService.create(name, email, password_, admin);
   }
   @Post('/signin')
-  async signinUser(@Body() body: SignInUserDto, @Session() session: any) {
+  async signinUser(@Body() body: SignInUserDto, @Session() session) {
     var user = await this.authService.signin(body.email, body.password);
     session.userID = user.id;
-    console.log('Signin User Session ID: ', session);
+    console.log('Created User. Session ID: ', session);
     return user;
   }
   @UseGuards(AuthGuard)
@@ -59,7 +60,7 @@ export class UsersController {
   }
   @UseGuards(AuthGuard)
   @Post('/logout')
-  async logout(@Session() session: any) {
+  async logout(@Session() session) {
     if (!session.userID) {
       throw new BadRequestException('You must log in first!');
     }
