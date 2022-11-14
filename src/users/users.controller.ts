@@ -8,7 +8,7 @@ import {
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
-import { CurrentUser } from '../decorators/current-user.decorator';
+
 import { CreateUserDto } from './dtos/signup-user.dto';
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
@@ -16,6 +16,7 @@ import { SignInUserDto } from './dtos/signin-user.dto';
 import { AuthGuard } from '../guards/auth-guard';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dtos/user.dto';
+const cookieSession = require('cookie-session');
 @Serialize(UserDto)
 @Controller('users')
 export class UsersController {
@@ -24,7 +25,7 @@ export class UsersController {
     private userService: UsersService,
   ) {}
   @Post('/signup')
-  async createUser(@Body() body: CreateUserDto, @CurrentUser() session) {
+  async createUser(@Body() body: CreateUserDto, @Session() session) {
     if (body.admin == 1) {
       throw new BadRequestException('You cannot sign up as Admin!');
     }
@@ -34,30 +35,31 @@ export class UsersController {
       body.password,
       body.admin,
     );
+    session.userID = 20;
     return await this.userService.create(name, email, password_, admin);
   }
   @Post('/signin')
-  async signinUser(@Body() body: SignInUserDto, @CurrentUser() session) {
+  async signinUser(@Body() body: SignInUserDto, @Session() session) {
     var user = await this.authService.signin(body.email, body.password);
-
     session.userID = user.id;
-    console.log(session);
+    console.log('Created User. Session ID: ', session);
     return user;
   }
+  @UseGuards(AuthGuard)
   @Get('/findone/:id')
-  async findOne(@Param('id') id: number, @CurrentUser() session) {
+  async findOne(@Param('id') id: number) {
     return await this.userService.findOne(id);
   }
 
   @Get('/whoami')
-  @UseGuards(AuthGuard)
-  async WhoAmI(@CurrentUser() session) {
-    console.log(session);
+  // @UseGuards(AuthGuard)
+  async WhoAmI(@Session() session) {
+    console.log('IN WHO AM I: ', session);
     return this.userService.findOne(session.userID);
   }
   @UseGuards(AuthGuard)
   @Post('/logout')
-  async logout(@CurrentUser() session) {
+  async logout(@Session() session) {
     if (!session.userID) {
       throw new BadRequestException('You must log in first!');
     }

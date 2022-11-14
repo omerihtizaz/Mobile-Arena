@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { BadRequestException, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -32,7 +32,7 @@ describe('Authentication System (e2e)', () => {
         MobilesModule,
         TypeOrmModule.forRoot({
           type: 'sqlite',
-          database: 'test.sqlite',
+          database: ':memory:',
           dropSchema: true,
           entities: [User, Mobile, Category, BlackList],
           synchronize: true,
@@ -59,88 +59,142 @@ describe('Authentication System (e2e)', () => {
   afterEach(async () => {
     app.close();
   });
-  it('it should be able to sign up', async () => {
-    const returned = await request(app.getHttpServer())
-      .post('/users/signup')
-      .send(user)
-      .expect(201);
-    expect(returned.body.name).toEqual(user.name);
-    expect(returned.body.email).toEqual(user.email);
-  });
-  it('should throw an error if email already exsit', async () => {
-    let returned = await request(app.getHttpServer())
-      .post('/users/signup')
-      .send(user)
-      .expect(201);
-    returned = await request(app.getHttpServer())
-      .post('/users/signup')
-      .send(user)
-      .expect(400);
-  });
-
-  it('should be able to signin if email exists', async () => {
-    let returned = await request(app.getHttpServer())
-      .post('/users/signup')
-      .send(user)
-      .expect(201);
-
-    let loggedInUser = await request(app.getHttpServer())
-      .post('/users/signin')
-      .send({ email: user.email, password: user.password })
-      .set({ field: 'Session', userID: 1 })
-      .expect(201);
-
-    expect(returned.body.name).toEqual(loggedInUser.body.name);
-    expect(returned.body.email).toEqual(loggedInUser.body.email);
-  });
-  it('should throw an error if an admin tries to sign up in a user portal', async () => {
-    user.admin = 1;
-    await request(app.getHttpServer())
-      .post('/users/signup')
-      .send(user)
-      .expect(400);
-  });
-
-  // // /                   DOES NOT WORK
-  // it('should be able to tell who the logged in user is', async () => {
+  // it('it should be able to sign up', async () => {
+  //   const returned = await request(app.getHttpServer())
+  //     .post('/users/signup')
+  //     .send(user)
+  //     .expect(201);
+  //   expect(returned.body.name).toEqual(user.name);
+  //   expect(returned.body.email).toEqual(user.email);
+  // });
+  // it('should throw an error if email already exsit', async () => {
   //   let returned = await request(app.getHttpServer())
   //     .post('/users/signup')
   //     .send(user)
   //     .expect(201);
+  //   returned = await request(app.getHttpServer())
+  //     .post('/users/signup')
+  //     .send(user)
+  //     .expect(400);
+  // });
+
+  // it('should be able to signin if email exists', async () => {
+  //   let returned = await request(app.getHttpServer())
+  //     .post('/users/signup')
+  //     .send(user)
+  //     .expect(201);
+
   //   let loggedInUser = await request(app.getHttpServer())
   //     .post('/users/signin')
   //     .send({ email: user.email, password: user.password })
+  //     .set({ field: 'Session', userID: 1 })
   //     .expect(201);
 
-  //   let whoami = await request(app.getHttpServer())
-  //     .get('/users/whoami')
-  //     .expect(201);
-
-  //   expect(whoami).toEqual(returned);
+  //   expect(returned.body.name).toEqual(loggedInUser.body.name);
+  //   expect(returned.body.email).toEqual(loggedInUser.body.email);
+  // });
+  // it('should throw an error if an admin tries to sign up in a user portal', async () => {
+  //   user.admin = 1;
+  //   await request(app.getHttpServer())
+  //     .post('/users/signup')
+  //     .send(user)
+  //     .expect(400);
   // });
 
-  it('should be able to add a category', async () => {
-    let category = await request(app.getHttpServer())
-      .post('/categories/create')
-      .send({ name: 'private' })
+  // // // /                   DOES NOT WORK
+  // // it('should be able to tell who the logged in user is', async () => {
+  // //   let returned = await request(app.getHttpServer())
+  // //     .post('/users/signup')
+  // //     .send(user)
+  // //     .expect(201);
+  // //   let loggedInUser = await request(app.getHttpServer())
+  // //     .post('/users/signin')
+  // //     .send({ email: user.email, password: user.password })
+  // //     .expect(201);
+
+  // //   let whoami = await request(app.getHttpServer())
+  // //     .get('/users/whoami')
+  // //     .expect(201);
+
+  // //   expect(whoami).toEqual(returned);
+  // // });
+
+  // it('should be able to add a category', async () => {
+  //   let category = await request(app.getHttpServer())
+  //     .post('/categories/create')
+  //     .send({ name: 'private' })
+  //     .expect(201);
+
+  //   expect(category.body.name).toEqual('private');
+
+  //   category = await request(app.getHttpServer())
+  //     .post('/categories/create')
+  //     .send({ name: 'public' })
+  //     .expect(201);
+
+  //   expect(category.body.name).toEqual('public');
+  // });
+  // it('should be able to remove a category', async () => {
+  //   let category = await request(app.getHttpServer())
+  //     .get('/categories/remove/private')
+  //     .expect(200);
+
+  //   category = await request(app.getHttpServer())
+  //     .get('/categories/remove/public')
+  //     .expect(200);
+  // });
+  // it('should throw an error message if a non-registered/signout user tries to add a mobile ', async () => {
+  //   let response = await request(app.getHttpServer())
+  //     .post('/mobiles/create')
+  //     .send({
+  //       name: 'Huawei',
+  //       brand: 'Huawei',
+  //       specs: 'Very excellent phone',
+  //       year: 2016,
+  //       price: 10340,
+  //       categories: ['private'],
+  //     })
+  //     .expect(403);
+  // });
+  it('should add a mobile if a logged user tries to add one', async () => {
+    await request(app.getHttpServer())
+      .post('/users/signup')
+      .send(user)
       .expect(201);
-
-    expect(category.body.name).toEqual('private');
-
-    category = await request(app.getHttpServer())
-      .post('/categories/create')
-      .send({ name: 'public' })
+    await request(app.getHttpServer())
+      .post('/users/signin')
+      .send({ email: user.email, password: user.password })
       .expect(201);
-
-    expect(category.body.name).toEqual('public');
+    console.log(
+      await (
+        await request(app.getHttpServer()).get('/users/whoami')
+      ).body,
+    );
+    // await request(app.getHttpServer())
+    //   .post('/mobiles/create')
+    //   .send({
+    //     name: 'Huawei',
+    //     brand: 'Huawei',
+    //     specs: 'Very excellent phone',
+    //     year: 2016,
+    //     price: 1030,
+    //     categories: ['private'],
+    //   })
+    //   .expect(201);
   });
-  it('should be able to remove a category', async () => {
-    let category = await request(app.getHttpServer())
-      .get('/categories/remove/private')
-      .expect(200);
+  // it('should be able to blacklist a user', async () => {
+  //   user.admin = 1;
+  //   await request(app.getHttpServer())
+  //     .post('/admin/signup')
+  //     .send(user)
+  //     .expect(201);
+  //   await request(app.getHttpServer())
+  //     .post('/admin/signin')
+  //     .send({ email: user.email, password: user.password })
+  //     .expect(201);
 
-    category = await request(app.getHttpServer())
-      .get('/categories/remove/public')
-      .expect(200);
-  });
+  //   await request(app.getHttpServer())
+  //     .post(`/admin/blacklist/${user.email}`)
+  //     .expect(200);
+  // });
 });

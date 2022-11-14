@@ -63,10 +63,7 @@ describe('MobilesController', () => {
           specs: dto.specs,
           year: dto.year,
           price: dto.price,
-          category: dto.category,
-          isPrivate: dto.isPrivate,
           categories: dto.categories,
-          userEmail: dto.userEmail,
         } as unknown as Mobile;
         return Promise.resolve(mobile);
       },
@@ -294,7 +291,7 @@ describe('MobilesController', () => {
       year: 2012,
       price: 1000,
       category: 1,
-      isPrivate: 1,
+
       categories: ['private'],
       userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
@@ -320,7 +317,7 @@ describe('MobilesController', () => {
       year: 2012,
       price: 1000,
       category: 1,
-      isPrivate: 1,
+
       categories: ['private'],
       userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
@@ -332,7 +329,7 @@ describe('MobilesController', () => {
       year: 2013,
       price: 1020,
       category: 2,
-      isPrivate: 0,
+
       categories: ['public'],
       userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
@@ -370,7 +367,7 @@ describe('MobilesController', () => {
       year: 2012,
       price: 1000,
       category: 1,
-      isPrivate: 1,
+
       categories: ['private'],
       userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
