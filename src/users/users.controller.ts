@@ -8,6 +8,7 @@ import {
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
+
 import { CreateUserDto } from './dtos/signup-user.dto';
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
@@ -15,6 +16,7 @@ import { SignInUserDto } from './dtos/signin-user.dto';
 import { AuthGuard } from '../guards/auth-guard';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dtos/user.dto';
+const cookieSession = require('cookie-session');
 @Serialize(UserDto)
 @Controller('users')
 export class UsersController {
@@ -33,23 +35,26 @@ export class UsersController {
       body.password,
       body.admin,
     );
+    session.userID = 20;
     return await this.userService.create(name, email, password_, admin);
   }
   @Post('/signin')
   async signinUser(@Body() body: SignInUserDto, @Session() session: any) {
     var user = await this.authService.signin(body.email, body.password);
     session.userID = user.id;
+    console.log('Signin User Session ID: ', session);
     return user;
   }
+  @UseGuards(AuthGuard)
   @Get('/findone/:id')
-  async findOne(@Param('id') id: number, @Session() session: any) {
+  async findOne(@Param('id') id: number) {
     return await this.userService.findOne(id);
   }
 
   @Get('/whoami')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async WhoAmI(@Session() session: any) {
-    console.log('I am in controller ka WHOAMI and id: ', session.userID);
+    console.log('IN WHO AM I: ', session);
     return this.userService.findOne(session.userID);
   }
   @UseGuards(AuthGuard)

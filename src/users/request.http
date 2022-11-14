@@ -2,9 +2,10 @@ POST http://localhost:3000/users/signup
 Content-Type: application/json
 
 {
-    "name": "admin3", 
-    "email": "admin3@gmail.com",
-    "password": "admin3"
+    "name": "Omer Ihtizaz", 
+    "email": "Omerasdd@gmail.com",
+    "password": "Oasddmer",
+    "admin": 0
 }
 
 ###
@@ -12,8 +13,8 @@ POST http://localhost:3000/users/signin
 Content-Type: application/json
 
 {
-    "email": "admin3@gmail.com",
-    "password": "admin3"
+    "email": "Omerasdd@gmail.com",
+    "password": "Oasddmer"
 }
 
 ###

@@ -6,8 +6,6 @@ import { CreateCategoryService } from './dtos/create-category.dto';
 export class CategoriesController {
   constructor(private categoryService: CategoriesService) {}
   @Post('/create')
-  //   @UseGuards(AuthGuard)
-  //   @Serialize(ReportDto)
   async create(@Body() body: CreateCategoryService) {
     return this.categoryService.create(body);
   }

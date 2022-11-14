@@ -32,14 +32,10 @@ describe('UsersService', () => {
         return Promise.resolve(filteredcategories);
       },
       remove: (user: User) => {
-        // console.log('User: ', user);
         const filteredcategories = userDatabase.filter((curr_user) => {
           curr_user.id != user.id;
-          // console.log(curr_user.id, user.id);
         });
-        console.log('before: ', userDatabase);
         userDatabase = filteredcategories;
-        console.log('after: ', userDatabase);
         return Promise.resolve(user);
       },
       create: (someDto: any) => {
@@ -117,9 +113,6 @@ describe('UsersService', () => {
     expect(await userService.find('omer12@gmail.com')).toBeDefined();
   });
   it('should be able to remove an instance of user when prompted', async () => {
-    console.log(
-      '--------------------------------------------------------------------------',
-    );
     var consi = await userService.create('Omer', 'omer.@gmail.com', '123', 1);
     var user = await userService.findOne(consi.id);
     expect(user).toBeDefined();

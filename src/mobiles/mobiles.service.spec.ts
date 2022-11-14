@@ -7,8 +7,6 @@ import { UsersService } from '../users/users.service';
 import { CreateMobileDto } from './dtos/create-mobile.dto';
 import { Mobile } from './mobile.entity';
 import { MobilesService } from './mobiles.service';
-import { Equal, EqualOperator } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
 
 describe('MobilesService', () => {
   let service: MobilesService;
@@ -57,10 +55,7 @@ describe('MobilesService', () => {
           specs: dto.specs,
           year: dto.year,
           price: dto.price,
-          category: dto.category,
-          isPrivate: dto.isPrivate,
           categories: dto.categories,
-          userEmail: dto.userEmail,
         } as unknown as Mobile;
         // database.push(mobile);
         return Promise.resolve(mobile);
@@ -69,9 +64,6 @@ describe('MobilesService', () => {
         const filteredcategories = database.filter(
           (mobiles) => mobiles.name == to_remove.name,
         );
-        console.log('DATABASE: ', database);
-        console.log('FILTERED: ', filteredcategories, '/n', to_remove.name);
-        console.log('DATABASE: ', database);
         database = filteredcategories;
         return Promise.resolve(to_remove);
       },
@@ -121,10 +113,7 @@ describe('MobilesService', () => {
       specs: 'Very good',
       year: 2010,
       price: 20020,
-      category: 1,
-      isPrivate: 0,
       categories: ['private'],
-      userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
 
     var consi = await service.create(mobile, user);
@@ -146,10 +135,7 @@ describe('MobilesService', () => {
       specs: 'Very good',
       year: 2010,
       price: 20020,
-      category: 1,
-      isPrivate: 0,
       categories: ['private'],
-      userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
     await service.create(mobile, user);
     const consi = await service.update('A50', { price: 1000 });
@@ -173,10 +159,7 @@ describe('MobilesService', () => {
       specs: 'Very good',
       year: 2010,
       price: 20020,
-      category: 1,
-      isPrivate: 0,
       categories: ['private'],
-      userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
     await service.create(mobile, user);
     var to_remove = 'A50';

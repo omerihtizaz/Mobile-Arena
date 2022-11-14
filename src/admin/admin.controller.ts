@@ -5,8 +5,6 @@ import {
   Controller,
   Post,
   Session,
-  UseGuards,
-  ForbiddenException,
   forwardRef,
   Inject,
   BadRequestException,
@@ -24,6 +22,27 @@ export class AdminController {
     private adminService: AdminService,
     private userService: UsersService,
   ) {}
+
+  @Post('/signup')
+  async signUp(@Body() body: CreateAdminDto, @Session() session: any) {
+    if (body.admin == 0) {
+      throw new BadRequestException('You cannot sign up as a User here!');
+    }
+    var admin = await this.authService.signup(
+      body.name,
+      body.email,
+      body.password,
+      body.admin,
+    );
+    var to_returned = await this.userService.create(
+      admin.name,
+      admin.email,
+      admin.password_,
+      admin.admin,
+    );
+    return to_returned;
+  }
+
   @Post('/signin')
   async signinUser(@Body() body: SigninAdminDto, @Session() session: any) {
     var user = await this.authService.signin(body.email, body.password);
@@ -37,6 +56,7 @@ export class AdminController {
   @Get('/blacklist/:email')
   async blaclistUser(@Param('email') email: string, @Session() session: any) {
     const user = await this.userService.findOne(session.userID);
+    console.log('USER; ', user);
     if (!user || user.admin == 0 || user.id != session.userID) {
       return null;
     }
@@ -50,7 +70,6 @@ export class AdminController {
   @Get('/whitelist/:email')
   async whitelist(@Param('email') email: string, @Session() session: any) {
     const user = await this.userService.findOne(session.userID);
-    console.log('HERE IS USER: ', user);
     if (!user || user.admin == 0 || user.id != session.userID) {
       return null;
     }
