@@ -2,9 +2,10 @@ POST http://localhost:3000/users/signup
 Content-Type: application/json
 
 {
-    "name": "admin3", 
-    "email": "admin3@gmail.com",
-    "password": "admin3"
+    "name": "Omer Ihtizaz", 
+    "email": "Omerasd@gmail.com",
+    "password": "Oasdmer",
+    "admin": 0
 }
 
 ###
@@ -12,8 +13,8 @@ POST http://localhost:3000/users/signin
 Content-Type: application/json
 
 {
-    "email": "admin3@gmail.com",
-    "password": "admin3"
+    "email": "Omer@gmail.com",
+    "password": "Omer"
 }
 
 ###
@@ -27,11 +28,11 @@ Post http://localhost:3000/users/logout
 
 Get http://localhost:3000/users/whoami
 ####
-Get http://localhost:3000/users/findOne/10
+Get http://localhost:3000/users/findOne/1
 
 
 ###
-Get http://localhost:3000/users/find/Omer.Ihtizaz@gmail.com
+Get http://localhost:3000/users/find/Omer@gmail.com
 
 
 ###

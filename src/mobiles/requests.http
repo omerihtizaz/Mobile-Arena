@@ -3,12 +3,12 @@ POST http://localhost:3000/mobiles/create
 Content-Type: application/json
 
 {
-  "name": "Huawei",
-  "brand": "Huawei",
+  "name": "A51",
+  "brand": "A51",
   "specs": "Very excellent phone",
   "year": 2016,
-  "price": 10340,
-  "categories": [ "private"]
+  "price": 1034,
+  "categories": ["private"]
 }
 
 ### Get all listings in a category. A registered user can call both categories
@@ -22,4 +22,4 @@ Get http://localhost:3000/mobiles/myMobiles
 
 
 #### Delete a particular mobile if a user is logged in
-PATCH  http://localhost:3000/mobiles/deleteMobile/Huawei
+PATCH  http://localhost:3000/mobiles/deleteMobile/A50

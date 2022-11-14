@@ -2,9 +2,9 @@ POST http://localhost:3000/admin/signup
 Content-Type: application/json
 
 {
-    "name": "admin4", 
-    "email": "admin4@gmail.com",
-    "password": "admin4",
+    "name": "Admin", 
+    "email": "Admin@gmail.com",
+    "password": "Admin",
     "admin": 1
 }
 
@@ -13,8 +13,8 @@ POST http://localhost:3000/admin/signin
 Content-Type: application/json
 
 {
-    "email": "admin4@gmail.com",
-    "password": "admin4"
+    "email": "Admin@gmail.com",
+    "password": "Admin"
 }
 
 

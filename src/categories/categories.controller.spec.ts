@@ -23,7 +23,6 @@ describe('CategoriesController', () => {
         return await Promise.resolve(filteredcategories[0]);
       },
       find: async (name: any) => {
-        console.log(name);
         const filteredcategories = database.filter(
           async (categories) =>
             (await Promise.resolve(categories)).name === name.where.name.value,

@@ -60,7 +60,7 @@ describe('AdminController', () => {
           return Promise.resolve(undefined);
         }
         return Promise.resolve({
-          id: 1,
+          id: id,
           name: 'Omer',
           email: 'omer.@gmail.com',
           password: '123',
@@ -124,14 +124,17 @@ describe('AdminController', () => {
       password: 'password',
       admin: 0,
     } as unknown as User);
-    const admin = await controller.signinUser(
-      {
-        email: 'admin2@gmail.com',
-        password: 'password',
-      } as unknown as SignInUserDto,
-      { userID: 0 },
+    await expect(
+      controller.signinUser(
+        {
+          email: 'admin2@gmail.com',
+          password: 'password',
+        } as unknown as SignInUserDto,
+        { userID: 0 },
+      ),
+    ).rejects.toThrowError(
+      new BadRequestException('You cannot sign in as User'),
     );
-    expect(admin).toEqual(null);
   });
   it('should throw an error if a admin blacklists a user that is not present', async () => {
     databaseUser.push({
@@ -140,43 +143,46 @@ describe('AdminController', () => {
       password: 'password',
       admin: 0,
     } as unknown as User);
-    const admin = await controller.blaclistUser('user3@gmail.com', {
-      userID: 0,
-    });
-    expect(admin).toEqual(null);
+    await expect(
+      controller.blaclistUser('user3@gmail.com', {
+        userID: 0,
+      }),
+    ).toEqual(null || undefined || Promise.resolve({}));
   });
   it('should blacklist a user if the user provided is correct', async () => {
     databaseUser.push({
-      id: 2,
+      id: 1,
       email: 'user@gmail.com',
       password: 'password',
       admin: 0,
     } as unknown as User);
     const admin = await controller.blaclistUser('user@gmail.com', {
-      userID: 0,
+      userID: 1,
     });
     expect(admin).toBeDefined();
     expect(service.findOne('user@gmail.com')).toBeDefined();
   });
-  it('should throw an error if asked to whitelist a user that is already blacklisted', async () => {
+  it('should throw an error if asked to whitelist a user that is not   blacklisted', async () => {
     databaseBlacklist.push({
       email: 'user@gmail.com',
     } as unknown as BlackList);
-    const admin = await controller.whitelist('user1@gmail.com', {
-      userID: 0,
-    });
-    expect(admin).toBe(null);
+    await expect(
+      controller.whitelist('user1@gmail.com', {
+        userID: 0,
+      }),
+    ).toEqual(null || undefined || Promise.resolve({}));
   });
   it('should whitelist a user that is already blacklisted', async () => {
     databaseBlacklist.push({
       email: 'user@gmail.com',
     } as unknown as BlackList);
-    const admin = await controller.whitelist('user@gmail.com', {
-      userID: 0,
-    });
-    expect(admin).toBeDefined();
-    expect(service.findOne('user@gmail.com')).toEqual(
-      null || Promise.resolve({}),
+    expect(
+      controller.whitelist('user@gmail.com', {
+        userID: 0,
+      }),
+    ).toBeDefined();
+    await expect(service.findOne('user@gmail.com')).toEqual(
+      null || undefined || Promise.resolve({}),
     );
   });
 });

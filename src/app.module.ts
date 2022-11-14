@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -10,6 +10,8 @@ import { Category } from './categories/category.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { AdminModule } from './admin/admin.module';
 import { BlackList } from './admin/blacklist.entity';
+import { APP_PIPE } from '@nestjs/core';
+const cookieSession = require('cookie-session');
 
 @Module({
   imports: [
@@ -25,6 +27,22 @@ import { BlackList } from './admin/blacklist.entity';
     AdminModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({ whitelist: true }),
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cookieSession({
+          keys: ['asjhfsah'],
+        }),
+      )
+      .forRoutes('*');
+  }
+}

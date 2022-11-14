@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -16,6 +15,7 @@ import { AuthGuard } from '../guards/auth-guard';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { MobileDto } from './dtos/mobile.dto';
 import { UsersService } from '../users/users.service';
+const cookieSession = require('cookie-session');
 @Serialize(MobileDto)
 @Controller('mobiles')
 export class MobilesController {
@@ -26,15 +26,12 @@ export class MobilesController {
 
   @UseGuards(AuthGuard)
   @Post('/create')
-  async create(@Body() body: CreateMobileDto, @Session() session: any) {
+  async create(@Body() body: CreateMobileDto, @Session() session) {
     var user = await this.userService.findOne(session.userID);
     return this.mobileService.create(body, user);
   }
   @Get('/getCategoryMobiles/:name')
-  async getCategoryMobiles(
-    @Param('name') name: String,
-    @Session() session: any,
-  ) {
+  async getCategoryMobiles(@Param('name') name: String, @Session() session) {
     var id = 0;
     if (name === 'public') {
       id = 2;
@@ -55,7 +52,7 @@ export class MobilesController {
   }
   @UseGuards(AuthGuard)
   @Patch('/deleteMobile/:name')
-  async deleteMobile(@Param('name') name: string, @Session() session: any) {
+  async deleteMobile(@Param('name') name: string, @Session() session) {
     return await this.mobileService.deleteMobile(name, session.userID);
   }
 }

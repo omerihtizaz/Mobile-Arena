@@ -63,10 +63,7 @@ describe('MobilesController', () => {
           specs: dto.specs,
           year: dto.year,
           price: dto.price,
-          category: dto.category,
-          isPrivate: dto.isPrivate,
           categories: dto.categories,
-          userEmail: dto.userEmail,
         } as unknown as Mobile;
         return Promise.resolve(mobile);
       },
@@ -188,12 +185,12 @@ describe('MobilesController', () => {
         admin: number,
       ) => {
         return Promise.resolve({
-          id: Math.floor(Math.random() * 99999),
+          // id: Math.floor(Math.random() * 99999),
           name: name,
           email: email,
-          password: password,
+          password_: password,
           admin: admin,
-        } as unknown as User);
+        });
       },
       signin: (email: string, password: string) => {
         return Promise.resolve({
@@ -294,7 +291,7 @@ describe('MobilesController', () => {
       year: 2012,
       price: 1000,
       category: 1,
-      isPrivate: 1,
+
       categories: ['private'],
       userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
@@ -320,7 +317,7 @@ describe('MobilesController', () => {
       year: 2012,
       price: 1000,
       category: 1,
-      isPrivate: 1,
+
       categories: ['private'],
       userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
@@ -332,7 +329,7 @@ describe('MobilesController', () => {
       year: 2013,
       price: 1020,
       category: 2,
-      isPrivate: 0,
+
       categories: ['public'],
       userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
@@ -370,17 +367,11 @@ describe('MobilesController', () => {
       year: 2012,
       price: 1000,
       category: 1,
-      isPrivate: 1,
+
       categories: ['private'],
       userEmail: 'omer@gmail.com',
     } as unknown as CreateMobileDto;
     var createdMobile = await controller.create(mobile, { userID: 1 });
     expect(createdMobile).toBeDefined();
-    // var removed = await controller.deleteMobile('A50', { userID: 1 });
-    // expect(removed).toBeDefined();
-    // //ts-ignore
-    // var what = bridgeTable.filter((S) => S[0] === 1 && S[1] === 'A50');
-    // console.log(what);
-    // // expect();
   });
 });

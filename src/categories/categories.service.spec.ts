@@ -18,10 +18,7 @@ describe('CategoriesService', () => {
           async (blacklist) =>
             (await Promise.resolve(blacklist)).id === id.id.value,
         );
-        console.log(
-          'IN FINDONEBYID:::: ',
-          await Promise.resolve(filteredcategories[0]),
-        );
+
         return await Promise.resolve(filteredcategories[0]);
       },
       find: async (id: any) => {
@@ -79,7 +76,6 @@ describe('CategoriesService', () => {
     const to_remove_id = (await service.create(va_)).id;
 
     const removed = service.remove(to_remove_id);
-    console.log(database);
     expect(removed).toBeDefined();
     expect((await removed).id).toEqual(to_remove_id);
     expect(service.find('private')).toEqual(

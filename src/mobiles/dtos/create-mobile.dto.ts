@@ -24,14 +24,6 @@ export class CreateMobileDto {
   @Min(0)
   @Max(10000)
   price: Number;
-  @IsNumber()
-  @Min(0)
-  @Max(3)
-  category: Number;
-  @IsBoolean()
-  isPrivate: Boolean;
   @IsArray()
   categories: [];
-  @IsEmail()
-  userEmail: string;
 }
