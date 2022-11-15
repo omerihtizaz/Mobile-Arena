@@ -12,6 +12,7 @@ import { BlackList } from '../src/admin/blacklist.entity';
 import { CategoriesModule } from '../src/categories/categories.module';
 import { AdminModule } from '../src/admin/admin.module';
 import { Equal, Repository } from 'typeorm';
+import { setupApp } from '../src/setup-App';
 const cookieSession = require('cookie-session');
 describe('Authentication System (e2e)', () => {
   let userRepo: Repository<User>;
@@ -41,11 +42,12 @@ describe('Authentication System (e2e)', () => {
         }),
         CategoriesModule,
         AdminModule,
-        AppModule,
+        // AppModule,
       ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app = setupApp(app);
     userRepo = moduleFixture.get('UserRepository');
     // await userRepo.save(
     //   await userRepo.create({
