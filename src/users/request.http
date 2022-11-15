@@ -45,4 +45,4 @@ Content-Type: application/json
 
 
 ### 
-Get http://localhost:3000/users/remove/3
+Get http://localhost:3000/users/remove/1
