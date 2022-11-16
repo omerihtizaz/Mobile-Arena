@@ -53,7 +53,7 @@ export class UsersController {
   async signinUser(@Body() body: SignInUserDto, @Session() session) {
     var user = await this.authService.signin(body.email, body.password);
     session.userID = user.id;
-    console.log('Created User. Session ID: ', session);
+    console.log('""""AFTER SIGNING UP"""": ', session);
     return user;
   }
   @UseGuards(AuthGuard)
@@ -68,6 +68,7 @@ export class UsersController {
   @ApiOkResponse({ description: 'Find One User' })
   @ApiUnauthorizedResponse({ description: 'Forbidden Access' })
   async WhoAmI(@Session() session) {
+    console.log('"""""WHO AM I""""": ', session);
     return this.userService.findOne(session.userID);
   }
   @UseGuards(AuthGuard)

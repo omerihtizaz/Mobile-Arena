@@ -32,6 +32,7 @@ describe('Authentication System (e2e)', () => {
       imports: [
         UsersModule,
         MobilesModule,
+        // AppModule,
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
@@ -42,21 +43,16 @@ describe('Authentication System (e2e)', () => {
         }),
         CategoriesModule,
         AdminModule,
-        // AppModule,
       ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app = setupApp(app);
+    app.use(
+      cookieSession({
+        keys: ['asfjhasf'],
+      }),
+    );
     userRepo = moduleFixture.get('UserRepository');
-    // await userRepo.save(
-    //   await userRepo.create({
-    //     name: 'Admin',
-    //     email: 'admin@confiz.com',
-    //     password: 'password',
-    //     admin: 1,
-    //   }),
-    // );
     await app.init();
   });
   afterEach(async () => {
@@ -104,23 +100,22 @@ describe('Authentication System (e2e)', () => {
       .expect(400);
   });
 
-  // // // /                   DOES NOT WORK
-  // // it('should be able to tell who the logged in user is', async () => {
-  // //   let returned = await request(app.getHttpServer())
-  // //     .post('/users/signup')
-  // //     .send(user)
-  // //     .expect(201);
-  // //   let loggedInUser = await request(app.getHttpServer())
-  // //     .post('/users/signin')
-  // //     .send({ email: user.email, password: user.password })
-  // //     .expect(201);
+  it('should be able to tell who the logged in user is', async () => {
+    let returned = await request(app.getHttpServer())
+      .post('/users/signup')
+      .send(user)
+      .expect(201);
+    let loggedInUser = await request(app.getHttpServer())
+      .post('/users/signin')
+      .send({ email: user.email, password: user.password })
+      .expect(201);
 
-  // //   let whoami = await request(app.getHttpServer())
-  // //     .get('/users/whoami')
-  // //     .expect(201);
-
-  // //   expect(whoami).toEqual(returned);
-  // // });
+    let whoami = await request(app.getHttpServer())
+      .get('/users/whoami')
+      .set('Cookie', loggedInUser.header['set-cookie'])
+      .expect(200);
+    expect(whoami.body.email).toEqual(returned.body.email);
+  });
 
   it('should be able to add a category', async () => {
     let category = await request(app.getHttpServer())
@@ -159,22 +154,19 @@ describe('Authentication System (e2e)', () => {
       })
       .expect(403);
   });
+
   it('should add a mobile if a logged user tries to add one', async () => {
     await request(app.getHttpServer())
       .post('/users/signup')
       .send(user)
       .expect(201);
-    await request(app.getHttpServer())
+    const req = await request(app.getHttpServer())
       .post('/users/signin')
       .send({ email: user.email, password: user.password })
       .expect(201);
-    console.log(
-      await (
-        await request(app.getHttpServer()).get('/users/whoami')
-      ).body,
-    );
     await request(app.getHttpServer())
       .post('/mobiles/create')
+      .set('Cookie', req.header['set-cookie'])
       .send({
         name: 'Huawei',
         brand: 'Huawei',
@@ -185,19 +177,83 @@ describe('Authentication System (e2e)', () => {
       })
       .expect(201);
   });
+
   it('should be able to blacklist a user', async () => {
     user.admin = 1;
     await request(app.getHttpServer())
       .post('/admin/signup')
       .send(user)
       .expect(201);
-    await request(app.getHttpServer())
+    let signinreq = await request(app.getHttpServer())
       .post('/admin/signin')
       .send({ email: user.email, password: user.password })
       .expect(201);
-
+    const req = `/admin/blacklist/${user.email}`;
+    console.log(req);
     await request(app.getHttpServer())
-      .post(`/admin/blacklist/${user.email}`)
+      .get(req)
+      .set('Cookie', signinreq.header['set-cookie'])
       .expect(200);
+  });
+
+  it('should be able to whitelist a user if blacklisted', async () => {
+    user.admin = 1;
+    await request(app.getHttpServer())
+      .post('/admin/signup')
+      .send(user)
+      .expect(201);
+    let signinreq = await request(app.getHttpServer())
+      .post('/admin/signin')
+      .send({ email: user.email, password: user.password })
+      .expect(201);
+    let req = `/admin/blacklist/${user.email}`;
+    console.log(req);
+    await request(app.getHttpServer())
+      .get(req)
+      .set('Cookie', signinreq.header['set-cookie'])
+      .expect(200);
+    req = `/admin/whitelist/${user.email}`;
+    await request(app.getHttpServer())
+      .get(req)
+      .set('Cookie', signinreq.header['set-cookie'])
+      .expect(200);
+  });
+
+  it('should be throw an error if tries to whitelist a user who is not blacklisted', async () => {
+    user.admin = 1;
+    await request(app.getHttpServer())
+      .post('/admin/signup')
+      .send(user)
+      .expect(201);
+    let signinreq = await request(app.getHttpServer())
+      .post('/admin/signin')
+      .send({ email: user.email, password: user.password })
+      .expect(201);
+    let req = `/admin/whitelist/${user.email}`;
+    await request(app.getHttpServer())
+      .get(req)
+      .set('Cookie', signinreq.header['set-cookie'])
+      .expect(400);
+  });
+
+  it('should be throw an error if an unregistered user tries to blacklist a user', async () => {
+    let req = `/admin/whitelist/${user.email}`;
+    await request(app.getHttpServer()).get(req).expect(403);
+  });
+
+  it('should be throw an error if a user tries to blacklist a user', async () => {
+    await request(app.getHttpServer())
+      .post('/users/signup')
+      .send(user)
+      .expect(201);
+    const loggedInUser = await request(app.getHttpServer())
+      .post('/users/signin')
+      .send({ email: user.email, password: user.password })
+      .expect(201);
+    let req = `/admin/whitelist/${user.email}`;
+    await request(app.getHttpServer())
+      .get(req)
+      .set('Cookie', loggedInUser.header['set-cookie'])
+      .expect({});
   });
 });
