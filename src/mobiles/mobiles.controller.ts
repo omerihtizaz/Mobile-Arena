@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -47,10 +48,10 @@ export class MobilesController {
     } else if (name === 'private') {
       id = 1;
     } else {
-      return new Error("This category of mobiles doesn't exist");
+      throw new BadRequestException("This category of mobiles doesn't exist");
     }
     if (id == 1 && !session.userID) {
-      return new Error('Forbidden Resource');
+      throw new BadRequestException('Forbidden Resource');
     }
     return await this.mobileService.getCategoryMobiles(id);
   }

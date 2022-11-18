@@ -3,17 +3,17 @@ POST http://localhost:3000/mobiles/create
 Content-Type: application/json
 
 {
-  "name": "A51",
+  "name": "A528",
   "brand": "A51",
   "specs": "Very excellent phone",
   "year": 2016,
   "price": 1034,
-  "categories": ["private"]
+  "categories": ["public"]
 }
 
 ### Get all listings in a category. A registered user can call both categories
 ### while a unregistered user can only see public listings
-Get http://localhost:3000/mobiles/getCategoryMobiles/private
+Get http://localhost:3000/mobiles/getCategoryMobiles/public
 
 
 ### Get a user's mobiles if they are logged in

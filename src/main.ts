@@ -21,10 +21,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
-  // app.use(
-  //   cookieSession({
-  //     keys: ['asfjhasf'],
-  //   }),
   await app.listen(3000);
 }
 bootstrap();

@@ -35,7 +35,6 @@ export class AdminController {
   @ApiAcceptedResponse({ description: 'Create Admin Portal' })
   @ApiUnauthorizedResponse({ description: 'Unauthorised Creation' })
   async signUp(@Body() body: CreateAdminDto, @Session() session: any) {
-    console.log('""""""""Admin"""""""": Before signing up: ', session);
     if (body.admin == 0) {
       throw new BadRequestException('You cannot sign up as a User here!');
     }
@@ -51,7 +50,6 @@ export class AdminController {
       admin.password_,
       admin.admin,
     );
-    console.log('""""""""Admin"""""""": After signing up: ', session);
     return to_returned;
   }
 
@@ -60,14 +58,11 @@ export class AdminController {
   @ApiAcceptedResponse({ description: 'Admin Sign In' })
   @ApiUnauthorizedResponse({ description: 'Forbidden Resource' })
   async signinUser(@Body() body: SigninAdminDto, @Session() session: any) {
-    console.log('""""""""Admin"""""""": Before signing in : ', session);
-
     var user = await this.authService.signin(body.email, body.password);
     if (user.admin == 0) {
       throw new BadRequestException('You cannot sign in as User');
     }
     session.userID = user.id;
-    console.log('""""""""Admin"""""""": After signing in: ', session);
 
     return user;
   }
@@ -76,10 +71,7 @@ export class AdminController {
   @ApiUnauthorizedResponse({ description: 'Forbidden Resource' })
   @Get('/blacklist/:email')
   async blaclistUser(@Param('email') email: string, @Session() session: any) {
-    console.log('""""""""Admin"""""""": Before Blacklisting: ', session);
-
     const user = await this.userService.findOne(session.userID);
-    console.log('USER; ', user);
     if (!user || user.admin == 0 || user.id != session.userID) {
       return null;
     }
