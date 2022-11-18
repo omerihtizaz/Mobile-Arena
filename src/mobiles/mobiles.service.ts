@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { Mobile } from './mobile.entity';
@@ -97,7 +97,7 @@ export class MobilesService {
   async deleteMobile(name: string, userID: Number) {
     const mobile = await this.findOne(name);
     if (!mobile || mobile.user.id != userID) {
-      return new Error('Forbidden Resource!');
+      throw new BadRequestException('Forbidden Resource!');
     }
     return this.repo.remove(mobile);
   }

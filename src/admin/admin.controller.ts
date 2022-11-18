@@ -8,7 +8,14 @@ import {
   forwardRef,
   Inject,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
+import {
+  ApiAcceptedResponse,
+  ApiBody,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { AuthGuard } from '../guards/auth-guard';
 import { AuthService } from '../users/auth.service';
 import { UsersService } from '../users/users.service';
 import { AdminService } from './admin.service';
@@ -24,6 +31,9 @@ export class AdminController {
   ) {}
 
   @Post('/signup')
+  @ApiBody({ type: CreateAdminDto })
+  @ApiAcceptedResponse({ description: 'Create Admin Portal' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorised Creation' })
   async signUp(@Body() body: CreateAdminDto, @Session() session: any) {
     if (body.admin == 0) {
       throw new BadRequestException('You cannot sign up as a User here!');
@@ -44,33 +54,43 @@ export class AdminController {
   }
 
   @Post('/signin')
+  @ApiBody({ type: SigninAdminDto })
+  @ApiAcceptedResponse({ description: 'Admin Sign In' })
+  @ApiUnauthorizedResponse({ description: 'Forbidden Resource' })
   async signinUser(@Body() body: SigninAdminDto, @Session() session: any) {
     var user = await this.authService.signin(body.email, body.password);
     if (user.admin == 0) {
       throw new BadRequestException('You cannot sign in as User');
     }
     session.userID = user.id;
+
     return user;
   }
-
+  @UseGuards(AuthGuard)
+  @ApiAcceptedResponse({ description: 'BlackList a User' })
+  @ApiUnauthorizedResponse({ description: 'Forbidden Resource' })
   @Get('/blacklist/:email')
   async blaclistUser(@Param('email') email: string, @Session() session: any) {
     const user = await this.userService.findOne(session.userID);
-    console.log('USER; ', user);
     if (!user || user.admin == 0 || user.id != session.userID) {
       return null;
     }
     return await this.adminService.blaclistUser(email);
   }
-
+  @UseGuards(AuthGuard)
   @Get('/findOne/:email')
+  @ApiAcceptedResponse({ description: 'Find a Blacklisted User' })
+  @ApiUnauthorizedResponse({ description: 'Forbidden' })
   async findOne(@Param('email') email: string, @Session() session: any) {
     return await this.adminService.findOne(email);
   }
   @Get('/whitelist/:email')
+  @UseGuards(AuthGuard)
+  @ApiAcceptedResponse({ description: 'Whitelist a user' })
+  @ApiUnauthorizedResponse({ description: 'Forbidden' })
   async whitelist(@Param('email') email: string, @Session() session: any) {
     const user = await this.userService.findOne(session.userID);
-    if (!user || user.admin == 0 || user.id != session.userID) {
+    if (user == null || user.admin == 0 || user.id != session.userID) {
       return null;
     }
     return await this.adminService.whitelistUser(email);

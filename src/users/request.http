@@ -2,9 +2,9 @@ POST http://localhost:3000/users/signup
 Content-Type: application/json
 
 {
-    "name": "Omer Ihtizaz", 
-    "email": "Omerasd@gmail.com",
-    "password": "Oasdmer",
+    "name": "Omer Ihtizaz1", 
+    "email": "Omerasd@gmail1.com",
+    "password": "Oasdmer1",
     "admin": 0
 }
 
@@ -13,8 +13,8 @@ POST http://localhost:3000/users/signin
 Content-Type: application/json
 
 {
-    "email": "Omerasdd@gmail.com",
-    "password": "Oasddmer"
+    "email": "Omerasd@gmail1.com",
+    "password": "Oasdmer1"
 }
 
 ###
@@ -45,4 +45,4 @@ Content-Type: application/json
 
 
 ### 
-Get http://localhost:3000/users/remove/3
+Get http://localhost:3000/users/remove/1

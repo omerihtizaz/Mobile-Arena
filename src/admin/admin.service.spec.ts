@@ -63,7 +63,6 @@ describe('AdminService', () => {
   it('should whitelist a user when prompted', async () => {
     await adminService.blaclistUser('o@gmail.com');
     const whitelistedUser = await adminService.whitelistUser('o@gmail.com');
-    console.log(whitelistedUser);
     expect(whitelistedUser).toBeDefined();
     expect(whitelistedUser.email).toEqual('o@gmail.com');
     expect(adminService.findOne('o@gmail.com')).toEqual(
