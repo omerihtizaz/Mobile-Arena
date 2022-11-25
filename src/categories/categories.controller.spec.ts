@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CategoriesController } from './categories.controller';
 import { CategoriesService } from './categories.service';
-import { Category } from './category.entity';
+import { Category } from './entity/category.entity';
 import { CreateCategoryService } from './dtos/create-category.dto';
 
 describe('CategoriesController', () => {

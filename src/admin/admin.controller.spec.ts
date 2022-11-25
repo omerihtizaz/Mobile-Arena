@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from './admin.controller';
 import { AuthService } from '../users/auth.service';
 import { UsersService } from '../users/users.service';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entity/user.entity';
 import { AdminService } from './admin.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { BlackList } from './blacklist.entity';
+import { BlackList } from './entity/blacklist.entity';
 import { SignInUserDto } from 'src/users/dtos/signin-user.dto';
 import { BadRequestException } from '@nestjs/common';
 describe('AdminController', () => {
@@ -108,7 +108,7 @@ describe('AdminController', () => {
       password: 'password',
       admin: 1,
     } as unknown as User);
-    const admin = await controller.signinUser(
+    const admin = await controller.signinAdmin(
       {
         email: 'admin1@gmail.com',
         password: 'password',
@@ -125,7 +125,7 @@ describe('AdminController', () => {
       admin: 0,
     } as unknown as User);
     await expect(
-      controller.signinUser(
+      controller.signinAdmin(
         {
           email: 'admin2@gmail.com',
           password: 'password',
@@ -141,20 +141,21 @@ describe('AdminController', () => {
       id: 2,
       email: 'user@gmail.com',
       password: 'password',
-      admin: 0,
+      admin: 1,
     } as unknown as User);
     await expect(
       controller.blaclistUser('user3@gmail.com', {
-        userID: 0,
+        userID: 2,
       }),
     ).toEqual(null || undefined || Promise.resolve({}));
   });
   it('should blacklist a user if the user provided is correct', async () => {
+    databaseBlacklist = [];
     databaseUser.push({
       id: 1,
       email: 'user@gmail.com',
       password: 'password',
-      admin: 0,
+      admin: 1,
     } as unknown as User);
     const admin = await controller.blaclistUser('user@gmail.com', {
       userID: 1,
@@ -162,23 +163,35 @@ describe('AdminController', () => {
     expect(admin).toBeDefined();
     expect(service.findOne('user@gmail.com')).toBeDefined();
   });
-  it('should throw an error if asked to whitelist a user that is not   blacklisted', async () => {
+  it('should throw an error if asked to whitelist a user that is not blacklisted', async () => {
+    databaseUser.push({
+      id: 1,
+      email: 'user@gmail.com',
+      password: 'password',
+      admin: 1,
+    } as unknown as User);
     databaseBlacklist.push({
       email: 'user@gmail.com',
     } as unknown as BlackList);
     await expect(
       controller.whitelist('user1@gmail.com', {
-        userID: 0,
+        userID: 1,
       }),
     ).toEqual(null || undefined || Promise.resolve({}));
   });
   it('should whitelist a user that is already blacklisted', async () => {
+    databaseUser.push({
+      id: 1,
+      email: 'user@gmail.com',
+      password: 'password',
+      admin: 1,
+    } as unknown as User);
     databaseBlacklist.push({
       email: 'user@gmail.com',
     } as unknown as BlackList);
     expect(
       controller.whitelist('user@gmail.com', {
-        userID: 0,
+        userID: 1,
       }),
     ).toBeDefined();
     await expect(service.findOne('user@gmail.com')).toEqual(

@@ -4,10 +4,10 @@ import * as request from 'supertest';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from '../src/users/users.module';
 import { MobilesModule } from '../src/mobiles/mobiles.module';
-import { User } from '../src/users/user.entity';
-import { Mobile } from '../src/mobiles/mobile.entity';
-import { Category } from '../src/categories/category.entity';
-import { BlackList } from '../src/admin/blacklist.entity';
+import { User } from '../src/users/entity/user.entity';
+import { Mobile } from '../src/mobiles/entity/mobile.entity';
+import { Category } from '../src/categories/entity/category.entity';
+import { BlackList } from '../src/admin/entity/blacklist.entity';
 import { CategoriesModule } from '../src/categories/categories.module';
 import { AdminModule } from '../src/admin/admin.module';
 const cookieSession = require('cookie-session');
@@ -109,7 +109,7 @@ describe('Integration tests ( e2e ) ', () => {
       let loggedInUser = await request(app.getHttpServer())
         .post('/users/signin')
         .send({ email: user.email, password: user.password })
-        .set({ field: 'Session', userID: 1 })
+        .set({ field: 'Cookie', userID: 1 })
         .expect(201);
 
       expect(returned.body.name).toEqual(loggedInUser.body.name);

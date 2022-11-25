@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { EqualOperator } from 'typeorm';
 import { CategoriesService } from './categories.service';
-import { Category } from './category.entity';
+import { Category } from './entity/category.entity';
 import { CreateCategoryService } from './dtos/create-category.dto';
 
 describe('CategoriesService', () => {

@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AdminService } from '../admin/admin.service';
 import { CategoriesService } from '../categories/categories.service';
-import { Category } from '../categories/category.entity';
+import { Category } from '../categories/entity/category.entity';
 import { AuthService } from '../users/auth.service';
-import { User } from '../users/user.entity';
+import { User } from '../users/entity/user.entity';
 import { UsersController } from '../users/users.controller';
 import { UsersService } from '../users/users.service';
 import { Equal, EqualOperator, SelectQueryBuilder } from 'typeorm';
 import { MobilesController } from './mobiles.controller';
 import { MobilesService } from './mobiles.service';
-import { Mobile } from './mobile.entity';
+import { Mobile } from './entity/mobile.entity';
 import { CreateMobileDto } from './dtos/create-mobile.dto';
 
 describe('MobilesController', () => {

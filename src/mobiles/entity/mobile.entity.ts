@@ -6,8 +6,8 @@ import {
   JoinTable,
   ManyToOne,
 } from 'typeorm';
-import { Category } from '../categories/category.entity';
-import { User } from '../users/user.entity';
+import { Category } from '../../categories/entity/category.entity';
+import { User } from '../../users/entity/user.entity';
 @Entity()
 export class Mobile {
   @PrimaryColumn()

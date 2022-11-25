@@ -5,11 +5,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UsersService } from '../users.service';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
-import { AdminService } from '../admin/admin.service';
-
+import { AdminService } from 'src/admin/admin.service';
+// import { AdminService } from '.../';
 const scrypt = promisify(_scrypt);
 @Injectable()
 export class AuthService {
