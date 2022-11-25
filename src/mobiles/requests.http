@@ -1,25 +1,27 @@
 ### Create a new mobile if the user is logged in
-POST http://localhost:3000/mobiles/create
+POST http://localhost:3000/mobiles/v1.0/create
 Content-Type: application/json
 
 {
-  "name": "A528",
-  "brand": "A51",
+  "name": "A8",
+  "brand": "Samsung",
   "specs": "Very excellent phone",
   "year": 2016,
-  "price": 1034,
-  "categories": ["public"]
+  "price": 0,
+  "categories": [ "public"]
 }
 
 ### Get all listings in a category. A registered user can call both categories
 ### while a unregistered user can only see public listings
-Get http://localhost:3000/mobiles/getCategoryMobiles/public
+Get http://localhost:3000/mobiles/v1.0/getCategoryMobiles/private
 
+###
+Get http://localhost:3000/mobiles/v1.0/myMobiles
 
-### Get a user's mobiles if they are logged in
-Get http://localhost:3000/mobiles/myMobiles
-
-
+### Get a user's mobiles/v1.0 if they are logged in
+Get http://localhost:3000/mobiles/v1.0/myMobiles
+###
+Get http://localhost:3000/mobiles/v1.0/getAllMobiles/2
 
 #### Delete a particular mobile if a user is logged in
-PATCH  http://localhost:3000/mobiles/deleteMobile/A50
+PATCH  http://localhost:3000/mobiles/v1.0/deleteMobile/A58

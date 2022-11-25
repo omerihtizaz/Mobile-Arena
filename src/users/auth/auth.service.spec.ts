@@ -1,9 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AdminService } from '../admin/admin.service';
+import { AdminService } from '../../admin/admin.service';
 import { AuthService } from './auth.service';
-import { User } from './user.entity';
-import { UsersService } from './users.service';
+import { User } from '../entity/user.entity';
+import { UsersService } from '../users.service';
 describe('AUTH SERVICE', () => {
   let authService: AuthService;
   let fakeUserService: Partial<UsersService>;

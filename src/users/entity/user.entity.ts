@@ -1,4 +1,4 @@
-import { Mobile } from '../mobiles/mobile.entity';
+import { Mobile } from '../../mobiles/entity/mobile.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 @Entity()
 export class User {

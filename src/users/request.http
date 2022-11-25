@@ -1,24 +1,24 @@
-POST http://localhost:3000/users/signup
+POST http://localhost:3000/users/v1.0/signup
 Content-Type: application/json
 
 {
-    "name": "Omer Ihtizaz1", 
-    "email": "Omerasd@gmail1.com",
-    "password": "Oasdmer1",
+    "name": "Omer", 
+    "email": "Omer@gmail.com",
+    "password": "oiaZCasasd",
     "admin": 0
 }
 
 ###
-POST http://localhost:3000/users/signin
+POST http://localhost:3000/users/v1.0/signin
 Content-Type: application/json
 
 {
-    "email": "Omerasd@gmail1.com",
-    "password": "Oasdmer1"
+    "email": "Omer@gmail.com",
+    "password": "oiaZCasasd"
 }
 
 ###
-Post http://localhost:3000/users/logout
+Get http://localhost:3000/users/v1.0/logout
 ####
 # ###
 # Get http://localhost:3000/users/colors/Red

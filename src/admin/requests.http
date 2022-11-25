@@ -1,15 +1,15 @@
-POST http://localhost:3000/admin/signup
+POST http://localhost:3000/admin/v1.0/signup
 Content-Type: application/json
 
 {
     "name": "Admin", 
-    "email": "Admin@gmail.com",
-    "password": "Admin",
+    "email": "Admasdin@gmail.com",
+    "password": "Adminasdfas",
     "admin": 1
 }
 
 ###
-POST http://localhost:3000/admin/signin
+POST http://localhost:3000/admin/v1.0/signin
 Content-Type: application/json
 
 {
@@ -19,8 +19,8 @@ Content-Type: application/json
 
 
 ### 
-Get http://localhost:3000/admin/blacklist/admin3@gmail.com
+Get http://localhost:3000/admin/v1.0/blacklist/admin5@gmail.com
 
 
 ### 
-Get http://localhost:3000/admin/whitelist/admin3@gmail.com
+Get http://localhost:3000/admin/v1.0/whitelist/admin5@gmail.com

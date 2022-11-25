@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EqualOperator } from 'typeorm';
 import { AdminService } from './admin.service';
-import { BlackList } from './blacklist.entity';
+import { BlackList } from './entity/blacklist.entity';
 let adminService: AdminService;
 var blacklistRepo;
 let blacklistDatabase: BlackList[] = [];

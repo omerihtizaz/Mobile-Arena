@@ -3,9 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Equal, EqualOperator, FindOperator } from 'typeorm';
 import { AdminService } from '../admin/admin.service';
-import { AuthService } from './auth.service';
-import { CreateUserDto } from './dtos/signup-user.dto';
-import { User } from './user.entity';
+import { AuthService } from './auth/auth.service';
+import { User } from './entity/user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 let userService: UsersService;
@@ -15,7 +14,6 @@ let userDatabase = [];
 describe('UsersService', () => {
   beforeEach(async () => {
     fakeUserRepo = {
-      // mock the repo `findOneOrFail`
       findOneBy: (id: number) => {
         const filteredcategories = userDatabase.filter(
           (user: User) => user.id == id['id'],

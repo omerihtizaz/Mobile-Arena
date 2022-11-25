@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { AdminService } from '../admin/admin.service';
-import { BlackList } from '../admin/blacklist.entity';
+import { BlackList } from '../admin/entity/blacklist.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
-import { AuthService } from './auth.service';
-import { User } from './user.entity';
+import { AuthService } from './auth/auth.service';
+import { User } from './entity/user.entity';
 import { Equal, EqualOperator } from 'typeorm';
 import { CreateUserDto } from './dtos/signup-user.dto';
 import { BadRequestException } from '@nestjs/common';
@@ -167,40 +167,31 @@ describe('UsersController', () => {
     expect(controller).toBeDefined();
   });
   it('should be able to create a user when promped', async () => {
-    const user = await controller.createUser(
-      {
-        name: 'Omer',
-        email: 'omer@gmail.com',
-        password: 'password',
-        admin: 0,
-      } as unknown as CreateUserDto,
-      { userID: -1 },
-    );
+    const user = await controller.createUser({
+      name: 'Omer',
+      email: 'omer@gmail.com',
+      password: 'password',
+      admin: 0,
+    } as unknown as CreateUserDto);
     expect(user).toBeDefined();
   });
   it('should throw an error when an admin tries to sign up', async () => {
     await expect(
-      controller.createUser(
-        {
-          name: 'Omer',
-          email: 'omer@gmail.com',
-          password: 'password',
-          admin: 1,
-        } as unknown as CreateUserDto,
-        { userID: -1 },
-      ),
-    ).rejects.toThrow(new BadRequestException('You cannot sign up as Admin!'));
-  });
-  it('it should be able to signin a user if the correct credentials are provided', async () => {
-    const user = await controller.createUser(
-      {
+      controller.createUser({
         name: 'Omer',
         email: 'omer@gmail.com',
         password: 'password',
-        admin: 0,
-      } as unknown as CreateUserDto,
-      { userID: -1 },
-    );
+        admin: 1,
+      } as unknown as CreateUserDto),
+    ).rejects.toThrow(new BadRequestException('You cannot sign up as Admin!'));
+  });
+  it('it should be able to signin a user if the correct credentials are provided', async () => {
+    const user = await controller.createUser({
+      name: 'Omer',
+      email: 'omer@gmail.com',
+      password: 'password',
+      admin: 0,
+    } as unknown as CreateUserDto);
     expect(user).toBeDefined();
 
     await expect(
@@ -214,29 +205,23 @@ describe('UsersController', () => {
     ).toBeDefined();
   });
   it('it should be able to return the currently logged in user', async () => {
-    const user = (await controller.createUser(
-      {
-        name: 'Omer',
-        email: 'omer@gmail.com',
-        password: 'password',
-        admin: 0,
-      } as unknown as CreateUserDto,
-      { userID: 0 },
-    )) as User;
+    const user = (await controller.createUser({
+      name: 'Omer',
+      email: 'omer@gmail.com',
+      password: 'password',
+      admin: 0,
+    } as unknown as CreateUserDto)) as User;
     var whoami = await controller.WhoAmI({ userID: user.id });
     expect(whoami).toBeDefined();
     await expect(whoami).toEqual(user);
   });
   it('should be able to log out a user', async () => {
-    var user = (await controller.createUser(
-      {
-        name: 'Omer',
-        email: 'omer@gmail.com',
-        password: 'password',
-        admin: 0,
-      } as unknown as CreateUserDto,
-      { userID: 0 },
-    )) as User;
+    var user = (await controller.createUser({
+      name: 'Omer',
+      email: 'omer@gmail.com',
+      password: 'password',
+      admin: 0,
+    } as unknown as CreateUserDto)) as User;
     expect(user).toBeDefined();
     user = await controller.signinUser(
       {

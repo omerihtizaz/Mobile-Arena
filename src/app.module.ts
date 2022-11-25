@@ -4,25 +4,25 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { MobilesModule } from './mobiles/mobiles.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
-import { Mobile } from './mobiles/mobile.entity';
-import { Category } from './categories/category.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { AdminModule } from './admin/admin.module';
-import { BlackList } from './admin/blacklist.entity';
 import { APP_PIPE } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { User } from './users/entity/user.entity';
+import { BlackList } from './admin/entity/blacklist.entity';
+import { Category } from './categories/entity/category.entity';
+import { Mobile } from './mobiles/entity/mobile.entity';
 const cookieSession = require('cookie-session');
-
+const settings = require('../ormconfig.js');
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+    }),
     UsersModule,
     MobilesModule,
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [User, Mobile, Category, BlackList],
-      synchronize: true,
-    }),
+    TypeOrmModule.forRoot(settings),
     CategoriesModule,
     AdminModule,
   ],
@@ -31,16 +31,21 @@ const cookieSession = require('cookie-session');
     AppService,
     {
       provide: APP_PIPE,
-      useValue: new ValidationPipe({ whitelist: true }),
+      useValue: new ValidationPipe({
+        whitelist: true,
+      }),
     },
+    ConfigService,
   ],
 })
 export class AppModule {
+  constructor(private configService: ConfigService) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
         cookieSession({
-          keys: ['asdfasfd'],
+          // keys: [this.configService.get('COOKIE_KEY')],
+          keys: ['jahsfiasf'],
         }),
       )
       .forRoutes('*');

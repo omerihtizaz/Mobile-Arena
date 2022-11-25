@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entity/user.entity';
 import { CategoriesService } from '../categories/categories.service';
-import { Category } from '../categories/category.entity';
+import { Category } from '../categories/entity/category.entity';
 import { UsersService } from '../users/users.service';
 import { CreateMobileDto } from './dtos/create-mobile.dto';
-import { Mobile } from './mobile.entity';
+import { Mobile } from './entity/mobile.entity';
 import { MobilesService } from './mobiles.service';
 
 describe('MobilesService', () => {
